@@ -19,10 +19,15 @@ async function request<T>(
 
   const data = await res.json();
   if (!res.ok) {
-    const message = Array.isArray(data.detail)
-      ? data.detail.join(', ')
-      : (data.detail ?? data.message ?? 'Ошибка сервера');
-    throw new Error(message);
+    // detail: string | string[]
+    if (data.detail) {
+      throw new Error(Array.isArray(data.detail) ? data.detail.join(', ') : data.detail);
+    }
+    // DRF field-level errors: { field: [msg, ...], ... }
+    const fieldErrors = Object.values(data as Record<string, string[]>)
+      .flat()
+      .filter((v) => typeof v === 'string');
+    throw new Error(fieldErrors.length ? fieldErrors.join(', ') : 'Ошибка сервера');
   }
 
   return data as T;

@@ -4,6 +4,7 @@ from apps.workshops.serializers import WorkshopSerializer
 
 
 class BookingSerializer(serializers.ModelSerializer):
+    # вложенный объект для чтения; workshop_id принимает id при записи
     workshop = WorkshopSerializer(read_only=True)
     workshop_id = serializers.PrimaryKeyRelatedField(
         source="workshop",
