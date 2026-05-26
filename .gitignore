@@ -7,3 +7,5 @@ venv/
 data/db.sqlite3
 staticfiles/
 .DS_Store
+client/node_modules/
+client/.next/
