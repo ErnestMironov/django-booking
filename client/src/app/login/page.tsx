@@ -19,11 +19,11 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const data = await api.post<{ access_token: string }>(
-        '/auth/login',
+      const data = await api.post<{ token: string }>(
+        '/auth/login/',
         { email, password },
       );
-      auth.login(data.access_token);
+      auth.login(data.token);
       router.push('/');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Ошибка');
@@ -34,8 +34,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6">Вход</h1>
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md text-gray-900">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900">Вход</h1>
 
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">

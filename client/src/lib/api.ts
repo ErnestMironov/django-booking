@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 /** Централизованный API-клиент с подстановкой токена */
 async function request<T>(
@@ -19,9 +19,9 @@ async function request<T>(
 
   const data = await res.json();
   if (!res.ok) {
-    const message = Array.isArray(data.message)
-      ? data.message.join(', ')
-      : (data.message ?? 'Ошибка сервера');
+    const message = Array.isArray(data.detail)
+      ? data.detail.join(', ')
+      : (data.detail ?? data.message ?? 'Ошибка сервера');
     throw new Error(message);
   }
 

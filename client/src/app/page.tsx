@@ -35,7 +35,7 @@ export default function HomePage() {
 
   useEffect(() => {
     api
-      .get<Workshop[]>('/workshops')
+      .get<Workshop[]>('/workshops/')
       .then(setWorkshops)
       .catch((err: unknown) =>
         setError(err instanceof Error ? err.message : 'Ошибка загрузки'),
