@@ -7,6 +7,21 @@ class WorkshopsConfig(AppConfig):
     def ready(self):
         from django.db.models.signals import post_migrate
         post_migrate.connect(_seed_workshops, sender=self)
+        post_migrate.connect(_seed_admin, sender=self)
+
+
+def _seed_admin(sender, **kwargs):
+    from apps.users.models import User
+
+    if User.objects.filter(email="admin@test.com").exists():
+        return
+
+    User.objects.create_user(
+        username="admin@test.com",
+        email="admin@test.com",
+        password="secret123",
+        role="admin",
+    )
 
 
 def _seed_workshops(sender, **kwargs):

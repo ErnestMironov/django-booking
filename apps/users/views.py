@@ -19,6 +19,8 @@ class RegisterView(APIView):
         user = serializer.save()
 
         refresh = RefreshToken.for_user(user)
+        refresh.access_token["email"] = user.email
+        refresh.access_token["role"] = user.role
         return Response(
             {
                 "token": str(refresh.access_token),
@@ -51,6 +53,8 @@ class LoginView(APIView):
             )
 
         refresh = RefreshToken.for_user(user)
+        refresh.access_token["email"] = user.email
+        refresh.access_token["role"] = user.role
         return Response(
             {
                 "token": str(refresh.access_token),

@@ -19,11 +19,11 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const data = await api.post<{ token: string }>(
+      const data = await api.post<{ token: string; user: { id: number; email: string; role: 'user' | 'admin' } }>(
         '/auth/login/',
         { email, password },
       );
-      auth.login(data.token);
+      auth.login(data.token, data.user);
       router.push('/');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Ошибка');

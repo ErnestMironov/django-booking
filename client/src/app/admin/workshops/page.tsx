@@ -57,7 +57,7 @@ export default function AdminWorkshopsPage() {
     setFetching(true);
     setFetchError(null);
     try {
-      const data = await api.get<Workshop[]>('/workshops');
+      const data = await api.get<Workshop[]>('/workshops/');
       setWorkshops(data);
     } catch (err) {
       setFetchError(err instanceof Error ? err.message : 'Ошибка загрузки');
@@ -116,9 +116,9 @@ export default function AdminWorkshopsPage() {
 
     try {
       if (editingId !== null) {
-        await api.put(`/workshops/${editingId}`, payload);
+        await api.put(`/workshops/${editingId}/`, payload);
       } else {
-        await api.post('/workshops', payload);
+        await api.post('/workshops/', payload);
       }
       closeModal();
       await fetchWorkshops();
@@ -133,7 +133,7 @@ export default function AdminWorkshopsPage() {
   async function handleDelete(id: number, title: string) {
     if (!window.confirm(`Удалить мастер-класс «${title}»?`)) return;
     try {
-      await api.delete(`/workshops/${id}`);
+      await api.delete(`/workshops/${id}/`);
       setWorkshops((prev) => prev.filter((w) => w.id !== id));
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Ошибка удаления');
