@@ -1,4 +1,7 @@
 from django.urls import path
+from .views import MyBookingsView, BookingDetailView
 
-# Placeholder — full views wired in Этап 3
-urlpatterns = []
+urlpatterns = [
+    path("my/", MyBookingsView.as_view(), name="my-bookings"),
+    path("<int:pk>/", BookingDetailView.as_view(), name="booking-detail"),
+]

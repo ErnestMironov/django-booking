@@ -32,7 +32,7 @@ export default function MyBookingsPage() {
     }
 
     api
-      .get<Booking[]>('/bookings/my')
+      .get<Booking[]>('/bookings/my/')
       .then(setBookings)
       .catch((err: unknown) =>
         setError(err instanceof Error ? err.message : 'Ошибка загрузки'),
@@ -43,7 +43,7 @@ export default function MyBookingsPage() {
   async function handleCancel(id: number) {
     if (!window.confirm('Отменить запись?')) return;
     try {
-      await api.delete(`/bookings/${id}`);
+      await api.delete(`/bookings/${id}/`);
       setBookings((prev) => prev.filter((b) => b.id !== id));
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'Ошибка при отмене');

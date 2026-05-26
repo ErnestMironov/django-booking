@@ -28,14 +28,14 @@ export default function WorkshopDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingCheckLoading, setBookingCheckLoading] = useState(true);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingError, setBookingError] = useState('');
-  /** ID существующей брони пользователя на этот воркшоп (если есть) */
   const [existingBookingId, setExistingBookingId] = useState<number | null>(null);
 
   useEffect(() => {
     api
-      .get<Workshop>(`/workshops/${id}`)
+      .get<Workshop>(`/workshops/${id}/`)
       .then(setWorkshop)
       .catch((err: unknown) =>
         setError(err instanceof Error ? err.message : 'Ошибка загрузки'),
@@ -45,14 +45,18 @@ export default function WorkshopDetailPage() {
 
   /** Проверяем, записан ли пользователь на этот воркшоп */
   useEffect(() => {
-    if (!user || user.role === 'admin') return;
+    if (!user || user.role === 'admin') {
+      setBookingCheckLoading(false);
+      return;
+    }
     api
-      .get<Booking[]>('/bookings/my')
+      .get<Booking[]>('/bookings/my/')
       .then((bookings) => {
         const found = bookings.find((b) => b.workshopId === Number(id));
         if (found) setExistingBookingId(found.id);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setBookingCheckLoading(false));
   }, [user, id]);
 
   if (loading || authLoading) {
@@ -140,7 +144,9 @@ export default function WorkshopDetailPage() {
               Управление мастер-классами →
             </Link>
           ) : user ? (
-            alreadyBooked ? (
+            bookingCheckLoading ? (
+              <div className="w-full h-10 bg-gray-100 rounded-lg animate-pulse" />
+            ) : alreadyBooked ? (
               <div className="w-full text-center bg-green-50 text-green-700 py-2.5 rounded-lg font-medium border border-green-200">
                 Вы записаны на этот мастер-класс ✓
               </div>
@@ -151,7 +157,7 @@ export default function WorkshopDetailPage() {
                     setBookingLoading(true);
                     setBookingError('');
                     try {
-                      await api.post('/bookings', { workshopId: workshop.id });
+                      await api.post('/bookings/my/', { workshopId: workshop.id });
                       setBookingSuccess(true);
                     } catch (err: unknown) {
                       setBookingError(err instanceof Error ? err.message : 'Ошибка при записи');
